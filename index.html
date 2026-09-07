@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabriel Carlos — Digital Product Manager Consultant</title>
+<meta name="description" content="Gabriel Carlos, Digital Product Manager Consultant. Portfolio site coming soon.">
+<meta name="theme-color" content="#F4F4F1">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gabriel Carlos — Digital Product Manager Consultant">
+<meta property="og:description" content="Portfolio site coming soon.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gabriel Carlos — Digital Product Manager Consultant">
+<meta name="twitter:description" content="Portfolio site coming soon.">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22%235E8C1F%22/></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Darker+Grotesque:wght@500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap">
+
+<style>
+  :root{
+    /* matcha palette */
+    --matcha-900:#1B2410; --matcha-800:#2C3D14; --matcha-700:#3E5A16; --matcha-600:#5E8C1F;
+    --matcha-500:#7BAA2C; --matcha-400:#A8CF45; --matcha-300:#C4DF7E; --matcha-200:#D8E8AE;
+    --matcha-100:#EDF3DC; --matcha-50:#F6F9EC;
+    /* neutrals */
+    --ink-900:#0E0F0C; --ink-700:#3A3C36; --ink-500:#6E7168; --ink-400:#8C8F85;
+    --fog-300:#C9CBC3; --fog-200:#E7E8E3; --fog-100:#F1F1EE; --bone:#F4F4F1; --paper:#FFFFFF;
+
+    --surface-glass: rgba(255,255,255,.72);
+    --text-link: var(--matcha-700);
+    --text-link-hover: var(--matcha-900);
+
+    --font-display:"Darker Grotesque","Schibsted Grotesk",Helvetica,sans-serif;
+    --font-sans:"Schibsted Grotesk",Helvetica,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:"DM Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bone);
+    color: var(--ink-900);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  a { color: var(--text-link); text-decoration: none; }
+  a:hover, a:focus-visible { color: var(--text-link-hover); }
+
+  ::selection { background: var(--matcha-300); color: var(--ink-900); }
+
+  :focus-visible {
+    outline: 2px solid var(--matcha-600);
+    outline-offset: 2px;
+  }
+
+  @keyframes tm-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .page {
+    position: relative;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    background: var(--bone);
+    color: var(--ink-900);
+    overflow: hidden;
+  }
+
+  #ripple-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+  }
+
+  .site-header,
+  .site-footer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding: clamp(14px, 4vw, 24px);
+  }
+
+  .site-header { border-bottom: 1px solid var(--fog-200); }
+
+  .site-footer {
+    border-top: 1px solid var(--fog-200);
+    background: var(--surface-glass);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  main {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(44px, 9vw, 72px) clamp(16px, 4vw, 24px);
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero-intro {
+    animation: tm-rise 560ms cubic-bezier(.22,1,.3,1) both;
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: var(--matcha-600);
+    transition: opacity 90ms linear;
+  }
+
+  .status-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--matcha-700);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(48px, 13vw, 148px);
+    line-height: .92;
+    letter-spacing: -.03em;
+    margin: 0;
+    word-break: break-word;
+  }
+
+  .role {
+    font-family: var(--font-sans);
+    font-size: clamp(17px, 1.4vw, 19px);
+    line-height: 1.5;
+    max-width: 38ch;
+    color: var(--ink-700);
+    margin: clamp(20px, 3vw, 28px) 0 0;
+  }
+
+  .linkedin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 22px;
+    border-radius: 999px;
+    flex: 0 1 auto;
+    justify-content: center;
+    background: var(--matcha-600);
+    color: #FFFFFF;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    transition: background 140ms cubic-bezier(.2,.8,.3,1);
+  }
+
+  .linkedin-btn:hover,
+  .linkedin-btn:focus-visible {
+    background: var(--matcha-700);
+    color: #FFFFFF;
+  }
+
+  .linkedin-btn .arrow { font-size: 14px; }
+
+  @media (max-width: 420px) {
+    .site-header, .site-footer { gap: 6px 12px; }
+    .role { max-width: 30ch; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-intro { animation: none; }
+    .linkedin-btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <canvas id="ripple-canvas" aria-hidden="true"></canvas>
+
+  <header class="site-header">
+    <span class="label-mono">Gabriel Carlos · Portfolio</span>
+    <span class="label-mono">Site 01 / 01 · In build</span>
+  </header>
+
+  <main>
+    <div class="hero-intro">
+      <div class="status-row">
+        <span class="status-dot" id="morse-dot" aria-hidden="true"></span>
+        <span class="status-label">Coming soon</span>
+      </div>
+
+      <h1>Gabriel<br>Carlos.</h1>
+
+      <p class="role">Digital Product Manager Consultant</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span class="label-mono">New work published soon</span>
+    <a class="linkedin-btn" href="https://www.linkedin.com/in/gabrielcarlos1/" target="_blank" rel="noopener">
+      LinkedIn <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Morse-code blinking status dot ---------- */
+  function startMorse(el, text, unit) {
+    if (!el) return;
+
+    var MORSE = {
+      A:'.-', B:'-...', C:'-.-.', D:'-..', E:'.', F:'..-.', G:'--.', H:'....',
+      I:'..', J:'.---', K:'-.-', L:'.-..', M:'--', N:'-.', O:'---', P:'.--.', Q:'--.-',
+      R:'.-.', S:'...', T:'-', U:'..-', V:'...-', W:'.--', X:'-..-', Y:'-.--', Z:'--..'
+    };
+
+    var seq = []; // [on, units]
+    text.toUpperCase().split(' ').forEach(function (word, wi) {
+      if (wi) seq.push([false, 7]);
+      word.split('').forEach(function (ch, ci) {
+        var code = MORSE[ch];
+        if (!code) return;
+        if (ci) seq.push([false, 3]);
+        code.split('').forEach(function (sym, si) {
+          if (si) seq.push([false, 1]);
+          seq.push([true, sym === '-' ? 3 : 1]);
+        });
+      });
+    });
+    seq.push([false, 10]); // pause before repeat
+
+    if (reduceMotion) {
+      el.style.opacity = '1';
+      return null;
+    }
+
+    var i = 0;
+    var timer = null;
+    function step() {
+      var pair = seq[i];
+      el.style.opacity = pair[0] ? '1' : '0.18';
+      i = (i + 1) % seq.length;
+      timer = setTimeout(step, pair[1] * unit);
+    }
+    step();
+    return function stop() { if (timer) clearTimeout(timer); };
+  }
+
+  var stopMorse = startMorse(document.getElementById('morse-dot'), 'GABRIEL', 140);
+
+  /* ---------- Ripple canvas ---------- */
+  var canvas = document.getElementById('ripple-canvas');
+  var host = canvas.parentElement;
+  var ctx = canvas.getContext('2d');
+  var w = 0, h = 0, raf = 0, ro = null;
+
+  var ringCount = 9;
+  var speed = 1 * 0.00022;
+  var opacity = 0.5;
+  var color = '#5E8C1F';
+  var rgb = (function () {
+    var c = color.replace('#', '');
+    var n = c.length === 3 ? c.split('').map(function (x) { return x + x; }).join('') : c;
+    return [parseInt(n.slice(0, 2), 16), parseInt(n.slice(2, 4), 16), parseInt(n.slice(4, 6), 16)];
+  })();
+
+  var restX = 0.72, restY = 0.5;
+  var tx = restX, ty = restY, ox = restX, oy = restY;
+
+  function resize() {
+    var r = canvas.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = r.width; h = r.height;
+    canvas.width = Math.max(1, Math.round(w * dpr));
+    canvas.height = Math.max(1, Math.round(h * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+
+  if (window.ResizeObserver) {
+    ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+  } else {
+    window.addEventListener('resize', resize);
+  }
+
+  function onMove(e) {
+    var r = canvas.getBoundingClientRect();
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    tx = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+    ty = Math.min(1, Math.max(0, (clientY - r.top) / r.height));
+  }
+  function onLeave() { tx = restX; ty = restY; }
+
+  host.addEventListener('pointermove', onMove);
+  host.addEventListener('pointerleave', onLeave);
+
+  var start = performance.now();
+  function draw(t) {
+    var elapsed = t - start;
+    ctx.clearRect(0, 0, w, h);
+    ox += (tx - ox) * 0.07;
+    oy += (ty - oy) * 0.07;
+    var cx = w * ox;
+    var cy = h * oy;
+    var max = Math.hypot(Math.max(cx, w - cx), Math.max(cy, h - cy)) * 1.05;
+
+    for (var i = 0; i < ringCount; i++) {
+      var phase = ((elapsed * speed) + i / ringCount) % 1;
+      var eased = 1 - Math.pow(1 - phase, 1.6);
+      var r = eased * max;
+      if (r < 2) continue;
+      var fade = Math.sin(Math.PI * phase);
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',' + (fade * opacity).toFixed(3) + ')';
+      ctx.lineWidth = 1.25;
+      ctx.stroke();
+    }
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',' + Math.min(1, opacity + 0.35) + ')';
+    ctx.fill();
+
+    raf = requestAnimationFrame(draw);
+  }
+
+  if (!reduceMotion) {
+    raf = requestAnimationFrame(draw);
+  } else {
+    draw(start);
+  }
+
+  window.addEventListener('beforeunload', function () {
+    if (stopMorse) stopMorse();
+    if (raf) cancelAnimationFrame(raf);
+    if (ro) ro.disconnect();
+    host.removeEventListener('pointermove', onMove);
+    host.removeEventListener('pointerleave', onLeave);
+  });
+})();
+</script>
+
+</body>
+</html>
