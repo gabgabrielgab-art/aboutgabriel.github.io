@@ -1,8 +1,11 @@
 // Gabriel Carlos — portfolio site behaviour.
 // Vanilla JS: mobile nav, scroll progress, cursor reticle, hero parallax,
 // card tilt, scroll reveals, the ballpit hero background, and the two
-// contact forms (project enquiry + crash-course email gate), both of
-// which deliver to gabgabrielgab@gmail.com via FormSubmit.co.
+// contact forms. The project-enquiry form delivers straight to
+// gabgabrielgab@gmail.com via FormSubmit.co. The crash-course PDF gate
+// instead runs a double opt-in: it emails the visitor a confirmation
+// link (via EmailJS), and only once they click it on confirm.html does
+// anything get sent — see assets/confirm.js and EMAIL_SETUP.md.
 //
 // Deliberately NOT `import`-ing ./ballpit.js here: it's loaded by its own
 // <script type="module"> tag in index.html instead. ballpit.js pulls
@@ -14,6 +17,9 @@
 // script means a CDN failure stays contained to ballpit.js; the
 // initBallpit() below already checks for window.createBallpit at call
 // time and degrades gracefully if it never showed up.
+
+import { buildConfirmUrl } from './confirm-link.js';
+import { EMAILJS_PUBLIC_KEY, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_CONFIRM } from './email-config.js';
 
 const FORM_EMAIL = 'gabgabrielgab@gmail.com';
 const FORM_ENDPOINT = `https://formsubmit.co/ajax/${FORM_EMAIL}`;
@@ -321,23 +327,41 @@ async function submitForm(fields) {
     e.preventDefault();
     if (!gateForm.reportValidity()) return;
 
+    const data = new FormData(gateForm);
+    if (data.get('_honey')) {
+      // Honeypot tripped — pretend success without sending anything.
+      askPane.hidden = true;
+      donePane.hidden = false;
+      return;
+    }
+
+    const email = data.get('email');
+    const courseTitle = document.querySelector('[data-gate-title]').textContent;
+
     gateErrorEl.hidden = true;
     gateSubmitBtn.disabled = true;
     gateSubmitBtn.textContent = 'Sending…';
 
-    const data = new FormData(gateForm);
-    const courseTitle = document.querySelector('[data-gate-title]').textContent;
-    const result = await submitForm({
-      email: data.get('email'),
-      course: courseTitle,
-      _honey: data.get('_honey'),
-      _subject: `Crash course request: ${courseTitle}`,
-    });
+    let ok = false;
+    if (typeof emailjs !== 'undefined' && !EMAILJS_PUBLIC_KEY.startsWith('YOUR_')) {
+      try {
+        const confirmLink = await buildConfirmUrl({ email, course: courseTitle, baseUrl: location.href });
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_CONFIRM, {
+          to_email: email,
+          course: courseTitle,
+          confirm_link: confirmLink,
+        });
+        ok = true;
+      } catch (err) {
+        console.warn('EmailJS confirm send failed', err);
+      }
+    }
 
     gateSubmitBtn.disabled = false;
     gateSubmitBtn.textContent = 'Send me the link';
 
-    if (result.ok) {
+    if (ok) {
       askPane.hidden = true;
       donePane.hidden = false;
     } else {
