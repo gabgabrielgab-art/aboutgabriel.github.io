@@ -1,8 +1,13 @@
 // Gabriel Carlos — portfolio site behaviour.
 // Vanilla JS: mobile nav, scroll progress, cursor reticle, hero parallax,
 // card tilt, scroll reveals, the ballpit hero background, and the two
-// contact forms (project enquiry + crash-course email gate), both of
-// which deliver to gabgabrielgab@gmail.com via FormSubmit.co.
+// contact forms. The project-enquiry form delivers straight to
+// gabgabrielgab@gmail.com via FormSubmit.co. The crash-course PDF gate
+// auto-delivers the file to the visitor by email via EmailJS the moment
+// they submit — see EMAIL_SETUP.md for the one-time account setup this
+// needs. If EmailJS isn't configured yet, or the requested course has no
+// file wired up in email-config.js, it falls back to just notifying
+// Gabriel via FormSubmit so the request still isn't lost.
 //
 // Deliberately NOT `import`-ing ./ballpit.js here: it's loaded by its own
 // <script type="module"> tag in index.html instead. ballpit.js pulls
@@ -13,7 +18,10 @@
 // with it, for a background animation. Loading it as an independent
 // script means a CDN failure stays contained to ballpit.js; the
 // initBallpit() below already checks for window.createBallpit at call
-// time and degrades gracefully if it never showed up.
+// time and degrades gracefully if it never showed up. email-config.js
+// has no such external dependency, so importing it directly here is safe.
+
+import { EMAILJS_PUBLIC_KEY, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_DELIVER, COURSE_FILES } from './email-config.js';
 
 const FORM_EMAIL = 'gabgabrielgab@gmail.com';
 const FORM_ENDPOINT = `https://formsubmit.co/ajax/${FORM_EMAIL}`;
@@ -317,27 +325,82 @@ async function submitForm(fields) {
     if (e.key === 'Escape' && !modal.hidden) closeGate();
   });
 
+  const doneTag = document.querySelector('[data-gate-done-tag]');
+  const doneTitle = document.querySelector('[data-gate-done-title]');
+  const doneBody = document.querySelector('[data-gate-done-body]');
+  const doneDownload = document.querySelector('[data-gate-download]');
+
   gateForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!gateForm.reportValidity()) return;
+
+    const data = new FormData(gateForm);
+    if (data.get('_honey')) {
+      // Honeypot tripped — pretend success without sending anything.
+      askPane.hidden = true;
+      donePane.hidden = false;
+      return;
+    }
+
+    const email = data.get('email');
+    const courseTitle = document.querySelector('[data-gate-title]').textContent;
 
     gateErrorEl.hidden = true;
     gateSubmitBtn.disabled = true;
     gateSubmitBtn.textContent = 'Sending…';
 
-    const data = new FormData(gateForm);
-    const courseTitle = document.querySelector('[data-gate-title]').textContent;
-    const result = await submitForm({
-      email: data.get('email'),
-      course: courseTitle,
-      _honey: data.get('_honey'),
-      _subject: `Crash course request: ${courseTitle}`,
-    });
+    const downloadPath = COURSE_FILES[courseTitle] || '';
+    const downloadLink = downloadPath ? new URL(downloadPath, location.href).toString() : '';
+    const emailjsReady = typeof emailjs !== 'undefined' && !EMAILJS_PUBLIC_KEY.startsWith('YOUR_');
+
+    let delivered = false;
+    if (emailjsReady && downloadLink) {
+      try {
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_DELIVER, {
+          to_email: email,
+          course: courseTitle,
+          download_link: downloadLink,
+        });
+        delivered = true;
+      } catch (err) {
+        console.warn('EmailJS auto-delivery failed', err);
+      }
+    }
+
+    let ok = delivered;
+    if (!delivered) {
+      // Either EmailJS isn't set up yet, this course has no file wired
+      // up, or the send itself failed — fall back to just notifying
+      // Gabriel so the request isn't lost.
+      const result = await submitForm({
+        email,
+        course: courseTitle,
+        _honey: data.get('_honey'),
+        _subject: `Crash course request: ${courseTitle}`,
+      });
+      ok = result.ok;
+    }
 
     gateSubmitBtn.disabled = false;
     gateSubmitBtn.textContent = 'Send me the link';
 
-    if (result.ok) {
+    if (ok) {
+      if (delivered) {
+        doneTag.textContent = 'Sent';
+        doneTitle.textContent = "It's in your inbox.";
+        doneBody.textContent = `I've emailed ${courseTitle} to ${email} — and you can grab it right here too, no need to wait.`;
+      } else {
+        doneTag.textContent = 'On its way';
+        doneTitle.textContent = 'Check your inbox.';
+        doneBody.textContent = `Your request for ${courseTitle} is with me — I read every request myself and I'll send it over shortly. If you don't hear back in a couple of days, it's worth checking spam.`;
+      }
+      if (downloadLink) {
+        doneDownload.href = downloadLink;
+        doneDownload.hidden = false;
+      } else {
+        doneDownload.hidden = true;
+      }
       askPane.hidden = true;
       donePane.hidden = false;
     } else {

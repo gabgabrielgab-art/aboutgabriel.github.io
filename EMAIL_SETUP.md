@@ -1,21 +1,22 @@
-# Setting up the crash-course email confirmation
+# Setting up automatic crash-course delivery
 
-The "Prototype Builder with AI" download now works as a double opt-in:
-
-1. Visitor submits their email on the site → gets a **confirmation email**.
-2. They click the link → lands on `confirm.html` on your site.
-3. They click **"Confirm & send"** (a deliberate second click, not automatic —
-   see the note in `assets/confirm.js` about why) → they get a **second
-   email with the PDF link**, and you get a copy of that same email (BCC),
-   so you know exactly who asked and when — with zero manual step from you.
+The "Prototype Builder with AI" download now sends itself: a visitor
+enters their email on the gate form and immediately gets an email with
+the PDF link — no manual step from you. You're BCC'd on that same email
+automatically, so you always know who requested it.
 
 The main "Start a project" contact form is untouched — it still delivers
-straight to gabgabrielgab@gmail.com via FormSubmit, no confirmation step.
+straight to gabgabrielgab@gmail.com via FormSubmit, same as before.
 
-This all runs through **EmailJS** (a service that lets a static site send
-real email from client-side JS, no backend needed). Free tier is 200
-emails/month. You need to create an account and two templates — I can't do
-this part for you, it requires you to sign in with your own Google account.
+This runs through **EmailJS**, a service that lets a static site send
+real email from client-side JS with no backend. Free tier is 200
+emails/month — plenty for a portfolio site. You need to create an
+account and one template — I can't do this part for you, it requires
+signing in with your own Google account.
+
+**Until you complete this setup**, the gate form still works safely: it
+falls back to just notifying you via FormSubmit (like before), so no
+request is ever lost — visitors just won't get the automatic email yet.
 
 ## 1. Create an EmailJS account and connect Gmail
 
@@ -26,45 +27,19 @@ this part for you, it requires you to sign in with your own Google account.
 3. Copy the **Service ID** it gives you (looks like `service_abc1234`).
 4. **Account** → **General** → copy your **Public Key**.
 
-## 2. Create the two email templates
+## 2. Create the delivery template
 
-Go to **Email Templates** → **Create New Template**, twice.
-
-### Template 1 — "Confirm your request" (sent to the visitor first)
-
-- **To email**: `{{to_email}}`
-- **Subject**: `Confirm your request — {{course}}`
-- **Content**, e.g.:
-
-  ```
-  Hi,
-
-  You asked for the "{{course}}" crash course from Gabriel's site.
-
-  Click below to confirm it's really you, and I'll send the download
-  straight over:
-
-  {{confirm_link}}
-
-  Didn't request this? Just ignore this email — nothing else happens.
-
-  — Gabriel
-  ```
-
-- Save it, then copy its **Template ID** (looks like `template_xyz9876`).
-  This is `EMAILJS_TEMPLATE_CONFIRM`.
-
-### Template 2 — "Here's your download" (sent after they confirm)
+Go to **Email Templates** → **Create New Template**.
 
 - **To email**: `{{to_email}}`
 - **BCC**: `gabgabrielgab@gmail.com`  ← set this in the template's own
-  "To/CC/BCC" settings in the EmailJS dashboard, not in code. This is what
-  gets you a copy of every confirmed request automatically.
+  "To/CC/BCC" settings in the EmailJS dashboard, not in code. This is
+  what gets you a copy of every request automatically.
 - **Subject**: `Your download — {{course}}`
 - **Content**, e.g.:
 
   ```
-  Here you go — thanks for confirming.
+  Here you go — thanks for your interest.
 
   {{course}}: {{download_link}}
 
@@ -73,17 +48,16 @@ Go to **Email Templates** → **Create New Template**, twice.
   — Gabriel
   ```
 
-- Save it, copy its **Template ID**. This is `EMAILJS_TEMPLATE_DELIVER`.
+- Save it, then copy its **Template ID** (looks like `template_xyz9876`).
 
-## 3. Plug the four values into the site
+## 3. Plug the three values into the site
 
 Open `assets/email-config.js` and replace the placeholders:
 
 ```js
-export const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';       // from step 1.4
-export const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID';       // from step 1.3
-export const EMAILJS_TEMPLATE_CONFIRM = 'YOUR_CONFIRM_TEMPLATE_ID'; // from step 2, template 1
-export const EMAILJS_TEMPLATE_DELIVER = 'YOUR_DELIVER_TEMPLATE_ID'; // from step 2, template 2
+export const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';        // from step 1.4
+export const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID';        // from step 1.3
+export const EMAILJS_TEMPLATE_DELIVER = 'YOUR_DELIVER_TEMPLATE_ID'; // from step 2
 ```
 
 Commit and push. That's it — no other code changes needed.
@@ -91,9 +65,8 @@ Commit and push. That's it — no other code changes needed.
 ## 4. Test it for real
 
 Go to the live site → Courses → "Get the PDF" → use a real email address
-you can check → confirm you get email 1 → click through → confirm you get
-the download page *and* email 2 → confirm gabgabrielgab@gmail.com got a
-BCC copy of email 2.
+you can check → confirm you get the email with the download link →
+confirm gabgabrielgab@gmail.com got a BCC copy of the same email.
 
 ## Adding more gated downloads later
 
@@ -107,17 +80,6 @@ export const COURSE_FILES = {
 };
 ```
 
-If a course isn't in that map, the flow still works (visitor still
-confirms, you still get notified) — it just tells them you'll follow up
-directly instead of showing a download button, so nothing breaks if you
-wire up the confirmation step before the file itself is ready.
-
-## On the "security" of the confirm link
-
-The link contains a signature (a hash of the email + course + timestamp +
-a fixed string in `email-config.js`). It's enough to stop casual spam and
-detect a tampered or expired (>7 day old) link — but the signing string
-ships in plain, unminified JS, so it is not real cryptographic protection
-against someone who reads the source and deliberately wants to forge a
-link. For a portfolio contact/download gate that's a reasonable trade-off;
-it is not appropriate for anything security-sensitive.
+If a course isn't in that map, the gate form still works — it just
+falls back to notifying you instead of auto-delivering, so nothing
+breaks if you wire up the gate before the file itself is ready.
