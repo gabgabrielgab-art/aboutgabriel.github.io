@@ -1,0 +1,92 @@
+/* Self-hosted fonts (previously loaded from fonts.googleapis.com /
+   fonts.gstatic.com). Font files are from Fontsource's Google Fonts
+   mirror, served from this origin instead of Google's — no request to
+   any third party happens when the page loads, and no visitor IP is
+   transmitted off-site just to render text. See PRIVACY.md. */
+
+@font-face {
+  font-family: 'Darker Grotesque';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url(darker-grotesque-latin-500-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Darker Grotesque';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(darker-grotesque-latin-600-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Darker Grotesque';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(darker-grotesque-latin-700-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Darker Grotesque';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 800;
+  src: url(darker-grotesque-latin-800-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Darker Grotesque';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 900;
+  src: url(darker-grotesque-latin-900-normal.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(schibsted-grotesk-latin-400-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url(schibsted-grotesk-latin-500-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(schibsted-grotesk-latin-600-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(schibsted-grotesk-latin-700-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 800;
+  src: url(schibsted-grotesk-latin-800-normal.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(dm-mono-latin-400-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url(dm-mono-latin-500-normal.woff2) format('woff2');
+}

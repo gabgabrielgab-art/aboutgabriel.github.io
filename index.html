@@ -16,12 +16,16 @@
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22https://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22%235E8C1F%22/></svg>">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Darker+Grotesque:wght@500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap">
+<!-- Fonts are self-hosted (assets/fonts/) rather than loaded from Google's
+     CDN: no request to any third party happens on page load, so no
+     visitor IP is transmitted off-site just to render text. See
+     PRIVACY.md. -->
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 
+<!-- three.js and its RoomEnvironment helper are self-hosted (assets/vendor/)
+     for the same reason, rather than loaded from unpkg. -->
 <script type="importmap">
-{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js","three/examples/jsm/":"https://unpkg.com/three@0.170.0/examples/jsm/"}}
+{"imports":{"three":"./assets/vendor/three.module.min.js","three/examples/jsm/environments/RoomEnvironment.js":"./assets/vendor/RoomEnvironment.js"}}
 </script>
 
 <style>
@@ -71,6 +75,11 @@
   body { overflow-x: clip; }
 
   a { color: var(--matcha-400); text-decoration: none; }
+  /* --matcha-400 reads fine on the dark page background but is too light
+     on the white cards (contact form, gate modal) — darken it there. */
+  .contact-card a, .modal-card a { color: var(--matcha-700); }
+  .contact-card a:hover, .contact-card a:focus-visible,
+  .modal-card a:hover, .modal-card a:focus-visible { color: var(--matcha-900); }
   a:hover, a:focus-visible { color: var(--matcha-300); }
 
   ::selection { background: var(--matcha-600); color: #fff; }
@@ -454,6 +463,27 @@
   .site-footer .who { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400); }
   .site-footer a { display: inline-flex; align-items: center; min-height: 44px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; }
 
+  /* ---------- Privacy notice ---------- */
+  .privacy-notice {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 200;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 14px 20px; padding: 16px clamp(16px, 4vw, 24px);
+    background: rgba(14,15,12,.96);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(255,255,255,.14);
+    color: #fff;
+  }
+  .privacy-notice p { margin: 0; max-width: 62ch; font-size: 14px; line-height: 1.5; color: var(--fog-300); }
+  .privacy-notice a { color: var(--matcha-400); }
+  .privacy-notice .actions { display: flex; flex-wrap: wrap; gap: 10px; flex: 0 0 auto; }
+  .privacy-notice button {
+    height: 40px; padding: 0 18px; border-radius: var(--radius-pill); border: 0; cursor: pointer;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 600;
+    background: var(--matcha-600); color: #fff;
+    transition: background var(--dur-fast) var(--ease-out);
+  }
+  .privacy-notice button:hover, .privacy-notice button:focus-visible { background: var(--matcha-700); }
+
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -722,7 +752,7 @@
 
           <button type="submit" class="submit-btn" data-submit-btn>Send it</button>
           <p class="form-error" data-contact-error hidden></p>
-          <p class="form-note">Messages go straight to my inbox — I reply personally.</p>
+          <p class="form-note">Messages go straight to my inbox — I reply personally. See the <a href="privacy.html">privacy policy</a> for how this is handled.</p>
         </form>
       </div>
     </div>
@@ -737,7 +767,7 @@
 
       <div data-gate-ask>
         <h3 id="gate-title">Where should I send it?</h3>
-        <p>Drop your email and I'll send the download link straight over. No list, no follow-ups you didn't ask for.</p>
+        <p>Drop your email and I'll send the download link straight over. No list, no follow-ups you didn't ask for — see the <a href="privacy.html">privacy policy</a>.</p>
         <form class="gate-form" data-gate-form novalidate>
           <label class="field">
             <span class="field-label">Email</span>
@@ -766,11 +796,23 @@
 
   <footer class="site-footer">
     <span class="who">Gabriel Carlos · Digital Product Manager · London</span>
-    <a href="https://www.linkedin.com/in/gabrielcarlos1/" target="_blank" rel="noopener">LinkedIn →</a>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center;">
+      <a href="privacy.html">Privacy &amp; cookies</a>
+      <a href="https://www.linkedin.com/in/gabrielcarlos1/" target="_blank" rel="noopener">LinkedIn →</a>
+    </div>
   </footer>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<div class="privacy-notice" data-privacy-notice hidden role="region" aria-label="Privacy notice">
+  <p>This site doesn't use tracking or advertising cookies. Forms send your details by email only to reply to you — see the <a href="privacy.html">privacy &amp; cookies policy</a>.</p>
+  <div class="actions">
+    <button type="button" data-dismiss-privacy-notice>Got it</button>
+  </div>
+</div>
+
+<!-- Self-hosted (assets/vendor/) rather than loaded from jsdelivr, for the
+     same third-party-request reason as the fonts and three.js above. -->
+<script src="assets/vendor/emailjs.min.js"></script>
 <script type="module" src="assets/ballpit.js"></script>
 <script type="module" src="assets/site.js"></script>
 </body>

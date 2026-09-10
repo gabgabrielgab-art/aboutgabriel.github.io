@@ -65,6 +65,34 @@ const coarsePointer = matchMedia('(pointer: coarse)').matches;
   setInterval(tick, 20000);
 })();
 
+/* ---------- Privacy notice ---------- */
+/* This site sets no cookies and runs no tracking, so nothing here needs
+   visitor consent to *run* — this is a transparency notice, not a
+   consent gate. The dismissal flag itself is strictly-necessary local
+   storage (remembers a UI preference, identifies nobody, goes nowhere),
+   so it's fine to set before any interaction. See privacy.html. */
+(function initPrivacyNotice() {
+  const notice = document.querySelector('[data-privacy-notice]');
+  const dismissBtn = document.querySelector('[data-dismiss-privacy-notice]');
+  if (!notice || !dismissBtn) return;
+
+  const STORAGE_KEY = 'privacy-notice-dismissed-v1';
+
+  function isDismissed() {
+    try { return localStorage.getItem(STORAGE_KEY) === '1'; } catch { return false; }
+  }
+  function setDismissed() {
+    try { localStorage.setItem(STORAGE_KEY, '1'); } catch { /* private mode etc. — banner just reappears next visit */ }
+  }
+
+  if (!isDismissed()) notice.hidden = false;
+
+  dismissBtn.addEventListener('click', () => {
+    notice.hidden = true;
+    setDismissed();
+  });
+})();
+
 /* ---------- Cursor reticle (fine pointer, motion-safe only) ---------- */
 /* Never toggled via static CSS — if this script fails to run, the
    ordinary system cursor stays visible instead of vanishing forever. */
