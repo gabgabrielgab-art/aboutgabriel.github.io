@@ -179,7 +179,7 @@
 
   /* ---------- Hero ---------- */
   #top {
-    position: sticky; top: 0; z-index: 0;
+    position: relative;
     min-height: 92vh;
     display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto;
     padding: 0 clamp(16px, 4vw, 24px) var(--space-7);
@@ -234,8 +234,6 @@
   .hero-stats > div { padding: 18px 18px 4px; }
   .hero-stats .stat-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400); }
   .hero-stats .stat-value { font-family: var(--font-mono); font-size: 24px; margin-top: 6px; }
-
-  .hero-sentinel { position: relative; z-index: 1; height: 1px; margin-bottom: -1px; }
 
   /* ---------- Marquee ---------- */
   .marquee {
@@ -529,8 +527,6 @@
       <div><div class="stat-label">Cardmembers served</div><div class="stat-value">1.5M+</div></div>
     </div>
   </section>
-
-  <div class="hero-sentinel" data-hero-sentinel></div>
 
   <div class="marquee">
     <div class="marquee-track">

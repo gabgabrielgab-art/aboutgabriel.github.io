@@ -163,7 +163,6 @@ const coarsePointer = matchMedia('(pointer: coarse)').matches;
 /* ---------- Ballpit hero background ---------- */
 (function initBallpit() {
   const canvas = document.getElementById('ballpit-canvas');
-  const sentinel = document.querySelector('[data-hero-sentinel]');
   if (!canvas) return;
 
   const wide = Math.max(innerWidth, 320);
@@ -196,17 +195,10 @@ const coarsePointer = matchMedia('(pointer: coarse)').matches;
 
   if (reduceMotion) instance.setPaused(true);
 
-  // The hero is sticky, so its own canvas never leaves the viewport —
-  // the ballpit's internal IntersectionObserver never sees it hidden.
-  // Watch a non-sticky sentinel at the hero's end instead, and pause
-  // rendering once later content has scrolled over it.
-  if (sentinel && !reduceMotion) {
-    const heroIo = new IntersectionObserver((entries) => {
-      const hidden = !entries[0].isIntersecting && entries[0].boundingClientRect.top < 0;
-      instance.setPaused(hidden);
-    }, { threshold: 0 });
-    heroIo.observe(sentinel);
-  }
+  // The hero scrolls normally (not sticky/pinned), so the ballpit's own
+  // internal IntersectionObserver on the canvas already pauses and
+  // resumes the render loop correctly as it leaves/re-enters the
+  // viewport — no extra wiring needed here.
 })();
 
 /* ---------- Form submission helper (FormSubmit.co AJAX) ---------- */
