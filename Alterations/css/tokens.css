@@ -1,0 +1,77 @@
+/* =========================================================================
+   EXCLUSIVE ALTERATIONS — DESIGN TOKENS
+   "Atelier after hours": warm near-black, walnut, brass and ivory silk.
+   Palette is pulled from the hero film (dark walnut table, gold shears,
+   burgundy pincushion, ivory silk under a 3200K lamp).
+   ========================================================================= */
+:root {
+  /* ---- Colour: core ---------------------------------------------------- */
+  --ink:        #0d0a08;   /* page background in the film, near-black warm  */
+  --ink-2:      #15100c;   /* raised dark surface                            */
+  --walnut:     #2b1d14;   /* deep wood, dark cards                          */
+  --umber:      #5a4130;   /* muted wood mid-tone, borders on light          */
+  --ivory:      #f5efe6;   /* primary light surface (silk)                   */
+  --parchment:  #ebe2d4;   /* secondary light surface                        */
+  --linen:      #d9cdbb;   /* hairlines / dividers on light                  */
+  --brass:      #c6a15b;   /* accent: shears, thread, CTAs                   */
+  --brass-hi:   #e3c88f;   /* accent highlight / hover                       */
+  --garnet:     #8e2f35;   /* rare accent: the pincushion (ratings, focus)   */
+
+  /* ---- Colour: roles --------------------------------------------------- */
+  --text-on-dark:        var(--ivory);
+  --text-on-dark-muted:  rgba(245, 239, 230, 0.86);   /* ≥ 7:1 on ink            */
+  --text-on-light:       #1b1410;                     /* 16:1 on ivory           */
+  --text-on-light-muted: #4f4035;                     /* 8.9:1 on ivory, 8:1 on parchment */
+  --accent-on-light:     #6e521c;                     /* brass darkened: 6.1:1 on ivory (AA for small text) */
+  --line-on-dark:        rgba(245, 239, 230, 0.14);
+  --line-on-light:       rgba(43, 29, 20, 0.14);
+  --accent:              var(--brass);
+  --focus:               var(--brass-hi);
+
+  /* ---- Typography ------------------------------------------------------ */
+  /* Display: Newsreader — a screen serif with sturdy strokes and optical sizes,
+     still elegant at display sizes (replaces hairline Bodoni for legibility).
+     Text/UI: Atkinson Hyperlegible Next — designed by the Braille Institute so
+     look-alike letters (I l 1, O 0, b d) are unmistakable for low-vision readers. */
+  --font-display: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-text:    "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+
+  /* Fluid type scale (360px → 1600px viewport) */
+  --fs-hero:  clamp(2.75rem, 1.3rem + 6.6vw, 8.5rem);  /* bold hero title — sized so "The art of the" fits a 320px phone */
+  --fs-h1:    clamp(2.6rem, 1.6rem + 4.2vw, 5.6rem);   /* chapter titles      */
+  --fs-h2:    clamp(2.1rem, 1.5rem + 2.6vw, 3.9rem);   /* section titles      */
+  --fs-h3:    clamp(1.35rem, 1.15rem + 0.8vw, 1.9rem);
+  --fs-lead:  clamp(1.08rem, 0.98rem + 0.45vw, 1.38rem);
+  --fs-body:  clamp(1.0625rem, 1rem + 0.2vw, 1.15rem);   /* 17px minimum */
+  --fs-small: 0.9375rem;                                 /* 15px minimum */
+  --fs-eyebrow: 0.8125rem;                               /* 13px, caps   */
+
+  --lh-tight: 1.0;
+  --lh-title: 1.08;
+  --lh-body:  1.65;
+  --track-eyebrow: 0.16em;
+  --track-title:  -0.01em;
+
+  /* ---- Space (8pt base) ------------------------------------------------ */
+  --s-1: 0.25rem; --s-2: 0.5rem;  --s-3: 0.75rem; --s-4: 1rem;
+  --s-5: 1.5rem;  --s-6: 2rem;    --s-7: 3rem;    --s-8: 4rem;
+  --s-9: 6rem;    --s-10: 8rem;   --s-11: 12rem;
+  --gutter: clamp(1rem, 0.5rem + 2.4vw, 3rem);       /* 16px phone gutter */
+  --max:    1320px;
+  --measure: 36ch;                                    /* chapter copy width */
+
+  /* ---- Shape & depth --------------------------------------------------- */
+  --radius-0: 0;
+  --radius-1: 2px;             /* cards, inputs — tailored, not bubbly   */
+  --radius-pill: 999px;        /* buttons, chips                          */
+  --shadow-lift: 0 30px 60px -30px rgba(13, 10, 8, 0.45);
+  --hairline: 1px solid var(--line-on-light);
+
+  /* ---- Motion ---------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);        /* = GSAP "expo.out"-ish */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 160ms; --dur-2: 320ms; --dur-3: 640ms; --dur-4: 1100ms;
+
+  /* ---- Layers ---------------------------------------------------------- */
+  --z-canvas: 0; --z-scrim: 1; --z-copy: 2; --z-rail: 3; --z-header: 10;
+}

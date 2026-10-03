@@ -1,0 +1,37 @@
+{
+  "count": 625,
+  "width": 1920,
+  "height": 1080,
+  "sourceFrames": 625,
+  "sourceFps": 24.0,
+  "step": 1,
+  "duration": 26.042,
+  "pattern": "f_{i}.webp",
+  "pad": 4,
+  "scenes": [
+    {
+      "start": 0,
+      "end": 47
+    },
+    {
+      "start": 48,
+      "end": 352
+    },
+    {
+      "start": 353,
+      "end": 401
+    },
+    {
+      "start": 402,
+      "end": 452
+    },
+    {
+      "start": 453,
+      "end": 544
+    },
+    {
+      "start": 545,
+      "end": 624
+    }
+  ]
+}
